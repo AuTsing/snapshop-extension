@@ -1,0 +1,3 @@
+[submodule "src/snapshop"]
+	path = src/snapshop
+	url = git@github.com:AuTsing/snapshop.git
