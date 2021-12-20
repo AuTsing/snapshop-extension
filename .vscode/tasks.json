@@ -22,7 +22,7 @@
         {
             "label": "watch snapshop",
             "type": "npm",
-            "script": "watch:snapshop",
+            "script": "build:snapshop",
             "problemMatcher": [],
             "isBackground": true,
             "presentation": {
