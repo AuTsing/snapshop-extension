@@ -22,8 +22,31 @@
         {
             "label": "watch snapshop",
             "type": "npm",
-            "script": "build:snapshop",
-            "problemMatcher": [],
+            "script": "watch:snapshop",
+            "problemMatcher": {
+                "owner": "vite",
+                "fileLocation": "absolute",
+                "pattern": [
+                    {
+                        "regexp": "^(.*):(\\d+):(\\d+):\\s+(error|warning|info):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5,
+                        "loop": true
+                    }
+                ],
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": {
+                        "regexp": "^build started\\.\\.\\."
+                    },
+                    "endsPattern": {
+                        "regexp": "^built in \\d+ms\\."
+                    }
+                }
+            },
             "isBackground": true,
             "presentation": {
                 "reveal": "never",
