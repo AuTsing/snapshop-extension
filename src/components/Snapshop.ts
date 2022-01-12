@@ -2,6 +2,16 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 
+export enum WebviewMessageCommand {
+    getState = 'getState',
+    setState = 'setState',
+}
+
+export interface IWebviewMessage {
+    command: WebviewMessageCommand;
+    data: any;
+}
+
 export default class Snapshop {
     private context: vscode.ExtensionContext;
     private panel?: vscode.WebviewPanel;
@@ -27,13 +37,42 @@ export default class Snapshop {
     }
 
     public open(): void {
-        this.panel = vscode.window.createWebviewPanel('Snapshop', 'SNAPSHOP', vscode.ViewColumn.One, {
+        if (this.panel) {
+            this.panel.reveal(vscode.window.activeTextEditor?.viewColumn);
+            return;
+        }
+
+        this.panel = vscode.window.createWebviewPanel('snapshop', 'Snapshop', vscode.ViewColumn.One, {
             enableScripts: true,
             retainContextWhenHidden: true,
         });
-        this.panel.webview.html = this.loadWebview();
-        this.panel.onDidDispose(() => {
-            this.panel = undefined;
+        this.panel.webview.onDidReceiveMessage((message: IWebviewMessage) => {
+            if (!this.panel) {
+                return;
+            }
+            switch (message.command) {
+                case WebviewMessageCommand.getState:
+                    return this.handleGetState(this.panel);
+                case WebviewMessageCommand.setState:
+                    return this.handleSetState(message.data);
+                default:
+                    break;
+            }
         });
+        this.panel.webview.html = this.loadWebview();
+        this.panel.iconPath = vscode.Uri.file(path.join(this.context.extensionPath, 'assets', 'logo.png'));
+        this.panel.onDidDispose(() => (this.panel = undefined));
+    }
+
+    private handleGetState(panel: vscode.WebviewPanel) {
+        const message: IWebviewMessage = {
+            command: WebviewMessageCommand.getState,
+            data: this.context.globalState.get('snapshop') ?? {},
+        };
+        panel.webview.postMessage(message);
+    }
+
+    private handleSetState(data: any) {
+        this.context.globalState.update('snapshop', data);
     }
 }
