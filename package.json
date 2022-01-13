@@ -21,6 +21,14 @@
             }
         ]
     },
+    "keywords": [
+        "snapshop",
+        "snapshot",
+        "截图",
+        "touchsprite",
+        "触动精灵",
+        "触动"
+    ],
     "publisher": "autsing",
     "icon": "assets/logo_128_128.png",
     "scripts": {
