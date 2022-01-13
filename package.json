@@ -2,7 +2,7 @@
     "name": "snapshop-extension",
     "displayName": "Snapshop",
     "description": "Modern, fast, clean snapshot handler.",
-    "version": "0.0.1",
+    "version": "2.0.0",
     "engines": {
         "vscode": "^1.63.0"
     },
