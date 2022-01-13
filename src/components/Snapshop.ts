@@ -60,7 +60,7 @@ export default class Snapshop {
             }
         });
         this.panel.webview.html = this.loadWebview();
-        this.panel.iconPath = vscode.Uri.file(path.join(this.context.extensionPath, 'assets', 'logo.png'));
+        this.panel.iconPath = vscode.Uri.file(path.join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
         this.panel.onDidDispose(() => (this.panel = undefined));
     }
 
