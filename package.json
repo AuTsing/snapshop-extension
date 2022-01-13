@@ -1,6 +1,6 @@
 {
     "name": "snapshop-extension",
-    "displayName": "snapshop-extension",
+    "displayName": "Snapshop",
     "description": "Modern, fast, clean snapshot handler.",
     "version": "0.0.1",
     "engines": {
