@@ -1,4 +1,4 @@
-# Change Log
+# Snapshop for VSCode Change Log
 
 ## [2.0.1] - 2022-01-19
 
