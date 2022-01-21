@@ -1,7 +1,7 @@
 {
     "name": "snapshop-extension",
-    "displayName": "Snapshop",
-    "description": "Modern, fast, clean snapshot handler.",
+    "displayName": "Snapshop 图色处理工具",
+    "description": "现代、简洁、快速的图色处理工具",
     "version": "2.0.1",
     "engines": {
         "vscode": "^1.63.0"
