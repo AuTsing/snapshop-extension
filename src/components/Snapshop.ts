@@ -1,6 +1,6 @@
-import * as vscode from 'vscode';
-import * as path from 'path';
-import * as fs from 'fs';
+import * as Vscode from 'vscode';
+import * as Path from 'path';
+import * as Fs from 'fs';
 
 export enum WebviewMessageCommand {
     getState = 'getState',
@@ -13,22 +13,22 @@ export interface IWebviewMessage {
 }
 
 export default class Snapshop {
-    private context: vscode.ExtensionContext;
-    private panel?: vscode.WebviewPanel;
+    private context: Vscode.ExtensionContext;
+    private panel?: Vscode.WebviewPanel;
 
-    constructor(context: vscode.ExtensionContext) {
+    constructor(context: Vscode.ExtensionContext) {
         this.context = context;
     }
 
     private loadWebview(): string {
         const root = this.context.extensionPath;
-        const assets = path.join(root, 'dist', 'snapshop', 'assets');
+        const assets = Path.join(root, 'dist', 'snapshop', 'assets');
 
-        const html = path.join(root, 'dist', 'snapshop', 'index.html');
-        const htmlContent = fs.readFileSync(html, { encoding: 'utf8' });
+        const html = Path.join(root, 'dist', 'snapshop', 'index.html');
+        const htmlContent = Fs.readFileSync(html, { encoding: 'utf8' });
         const replacer = (_: string, filename: string) => {
-            const js = path.join(assets, filename);
-            const uri = vscode.Uri.file(js).with({ scheme: 'vscode-resource' });
+            const js = Path.join(assets, filename);
+            const uri = Vscode.Uri.file(js).with({ scheme: 'vscode-resource' });
             return `${uri}`;
         };
         const htmlContentReplaced = htmlContent.replace(/\/assets\/(index\.\S*\.js)/, replacer).replace(/\/assets\/(style\.\S*\.css)/, replacer);
@@ -37,12 +37,14 @@ export default class Snapshop {
     }
 
     public open(): void {
+        Vscode.commands.executeCommand('workbench.action.closePanel');
+
         if (this.panel) {
-            this.panel.reveal(vscode.window.activeTextEditor?.viewColumn);
+            this.panel.reveal(Vscode.window.activeTextEditor?.viewColumn);
             return;
         }
 
-        this.panel = vscode.window.createWebviewPanel('snapshop', 'Snapshop', vscode.ViewColumn.One, {
+        this.panel = Vscode.window.createWebviewPanel('snapshop', 'Snapshop', Vscode.ViewColumn.One, {
             enableScripts: true,
             retainContextWhenHidden: true,
         });
@@ -60,11 +62,18 @@ export default class Snapshop {
             }
         });
         this.panel.webview.html = this.loadWebview();
-        this.panel.iconPath = vscode.Uri.file(path.join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
+        this.panel.iconPath = Vscode.Uri.file(Path.join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
+        this.panel.onDidChangeViewState(e => {
+            if (e.webviewPanel.visible) {
+                Vscode.commands.executeCommand('workbench.action.closePanel');
+            } else {
+                Vscode.commands.executeCommand('workbench.action.togglePanel');
+            }
+        });
         this.panel.onDidDispose(() => (this.panel = undefined));
     }
 
-    private handleGetState(panel: vscode.WebviewPanel) {
+    private handleGetState(panel: Vscode.WebviewPanel) {
         const message: IWebviewMessage = {
             command: WebviewMessageCommand.getState,
             data: this.context.globalState.get('snapshop') ?? {},
