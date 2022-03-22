@@ -1,6 +1,6 @@
 # Snapshop for VSCode Change Log
 
-## [2.1.0] - 2022-03-22
+## [2.1.1] - 2022-03-22
 
 -   🌟 新增生成代码支持定义 points 构成
 -   🐞 修复 VSCode 配置无法正常加载的问题
