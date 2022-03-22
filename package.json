@@ -2,7 +2,7 @@
     "name": "snapshop-extension",
     "displayName": "Snapshop 图色处理工具",
     "description": "现代、简洁、快速的图色处理工具",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "engines": {
         "vscode": "^1.63.0"
     },
