@@ -3,8 +3,8 @@ import * as Path from 'path';
 import * as Fs from 'fs';
 
 export enum WebviewMessageCommand {
-    getState = 'getState',
-    setState = 'setState',
+    getItem = 'getItem',
+    setItem = 'setItem',
 }
 
 export interface IWebviewMessage {
@@ -53,10 +53,10 @@ export default class Snapshop {
                 return;
             }
             switch (message.command) {
-                case WebviewMessageCommand.getState:
-                    return this.handleGetState(this.panel);
-                case WebviewMessageCommand.setState:
-                    return this.handleSetState(message.data);
+                case WebviewMessageCommand.getItem:
+                    return this.handleGetItem(this.panel, message.data);
+                case WebviewMessageCommand.setItem:
+                    return this.handleSetItem(message.data);
                 default:
                     break;
             }
@@ -73,15 +73,18 @@ export default class Snapshop {
         this.panel.onDidDispose(() => (this.panel = undefined));
     }
 
-    private handleGetState(panel: Vscode.WebviewPanel) {
+    private handleGetItem(panel: Vscode.WebviewPanel, data: { key: string }) {
+        const state: any = this.context.globalState.get('snapshop') ?? {};
         const message: IWebviewMessage = {
-            command: WebviewMessageCommand.getState,
-            data: this.context.globalState.get('snapshop') ?? {},
+            command: WebviewMessageCommand.getItem,
+            data: { key: data.key, value: state[data.key] },
         };
         panel.webview.postMessage(message);
     }
 
-    private handleSetState(data: any) {
-        this.context.globalState.update('snapshop', data);
+    private handleSetItem(data: { key: string; value: any }) {
+        const state: any = this.context.globalState.get('snapshop') ?? {};
+        state[data.key] = data.value;
+        this.context.globalState.update('snapshop', state);
     }
 }
