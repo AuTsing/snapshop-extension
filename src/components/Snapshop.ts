@@ -20,16 +20,17 @@ export default class Snapshop {
         this.context = context;
     }
 
-    private loadWebview(): string {
+    private loadWebview(panel: Vscode.WebviewPanel): string {
         const root = this.context.extensionPath;
         const assets = Path.join(root, 'dist', 'snapshop', 'assets');
 
         const html = Path.join(root, 'dist', 'snapshop', 'index.html');
         const htmlContent = Fs.readFileSync(html, { encoding: 'utf8' });
         const replacer = (_: string, filename: string) => {
-            const js = Path.join(assets, filename);
-            const uri = Vscode.Uri.file(js).with({ scheme: 'vscode-resource' });
-            return `${uri}`;
+            const path = Path.join(assets, filename);
+            const uri = Vscode.Uri.file(path);
+            const src = panel.webview.asWebviewUri(uri);
+            return src.toString();
         };
         const htmlContentReplaced = htmlContent.replace(/\/assets\/(index\.\S*\.js)/, replacer).replace(/\/assets\/(style\.\S*\.css)/, replacer);
 
@@ -61,7 +62,7 @@ export default class Snapshop {
                     break;
             }
         });
-        this.panel.webview.html = this.loadWebview();
+        this.panel.webview.html = this.loadWebview(this.panel);
         this.panel.iconPath = Vscode.Uri.file(Path.join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
         this.panel.onDidChangeViewState(e => {
             if (e.webviewPanel.visible) {
@@ -70,7 +71,7 @@ export default class Snapshop {
                 Vscode.commands.executeCommand('workbench.action.togglePanel');
             }
         });
-        this.panel.onDidDispose(() => (this.panel = undefined));
+        this.panel.onDidDispose(() => (this.panel = undefined), null, this.context.subscriptions);
     }
 
     private handleGetItem(panel: Vscode.WebviewPanel, data: { key: string }) {
