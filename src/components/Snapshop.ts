@@ -38,8 +38,6 @@ export default class Snapshop {
     }
 
     public open(): void {
-        Vscode.commands.executeCommand('workbench.action.closePanel');
-
         if (this.panel) {
             this.panel.reveal(Vscode.window.activeTextEditor?.viewColumn);
             return;
@@ -64,13 +62,6 @@ export default class Snapshop {
         });
         this.panel.webview.html = this.loadWebview(this.panel);
         this.panel.iconPath = Vscode.Uri.file(Path.join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
-        this.panel.onDidChangeViewState(e => {
-            if (e.webviewPanel.visible) {
-                Vscode.commands.executeCommand('workbench.action.closePanel');
-            } else {
-                Vscode.commands.executeCommand('workbench.action.togglePanel');
-            }
-        });
         this.panel.onDidDispose(() => (this.panel = undefined), null, this.context.subscriptions);
     }
 
