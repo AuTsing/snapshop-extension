@@ -1,6 +1,8 @@
-# Snapshop for VSCode Change Log
+# Snapshop for VSCode Change Log 更新日志
 
 ## [3.0.0] - 2023-05-04
+
+### Snapshop v3.0.0 更新日志
 
 -   💥 (破坏性更新) 重写 代码生成器，流程式可视化生成任意目标代码
 -   ✨ 新增 支持 WS 协议加载远程图片
