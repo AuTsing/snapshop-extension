@@ -1,6 +1,6 @@
 {
     "name": "snapshop-extension",
-    "displayName": "Snapshop 图色处理工具",
+    "displayName": "Snapshop 图色处理应用",
     "description": "现代、快速、跨平台的 Web 图色处理应用",
     "version": "2.1.4",
     "publisher": "autsing",
