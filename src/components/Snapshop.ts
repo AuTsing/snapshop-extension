@@ -32,7 +32,7 @@ export default class Snapshop {
             const src = panel.webview.asWebviewUri(uri);
             return src.toString();
         };
-        const htmlContentReplaced = htmlContent.replace(/\/assets\/(index\.\S*\.js)/, replacer).replace(/\/assets\/(style\.\S*\.css)/, replacer);
+        const htmlContentReplaced = htmlContent.replace(/\/assets\/(index-\S*\.js)/, replacer).replace(/\/assets\/(style-\S*\.css)/, replacer);
 
         return htmlContentReplaced;
     }
