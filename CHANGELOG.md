@@ -1,5 +1,16 @@
 # Snapshop for VSCode Change Log 更新日志
 
+## [3.0.1] - 2023-05-05
+
+### Snapshop v3.0.1 更新日志
+
+-   ✨ 新增 代码生成 构建流程支持插入到指定步骤
+-   🐞 修复部分文本错误
+
+### Snapshop Extension v3.0.1 更新日志
+
+-   🛠 切换 VSCode 页面时底部面板改为手动调整
+
 ## [3.0.0] - 2023-05-04
 
 ### Snapshop v3.0.0 更新日志
