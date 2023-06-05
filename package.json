@@ -2,7 +2,7 @@
     "name": "snapshop-extension",
     "displayName": "Snapshop 图色处理应用",
     "description": "现代、快速、跨平台的 Web 图色处理应用",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "publisher": "autsing",
     "icon": "assets/logo_128_128.png",
     "license": "GPL-3.0",
