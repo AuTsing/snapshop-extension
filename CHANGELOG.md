@@ -1,6 +1,6 @@
 # Snapshop for VSCode Change Log 更新日志
 
-## [3.0.2] - 2023-06-05
+## [3.0.3] - 2023-06-05
 
 ### Snapshop v3.0.2 更新日志
 
