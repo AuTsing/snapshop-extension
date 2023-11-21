@@ -1,5 +1,11 @@
 # Snapshop for VSCode Change Log 更新日志
 
+## [3.1.1] - 2023-11-21
+
+### Snapshop v3.1.1 更新日志
+
+-   🐞 修复复制时的异常提示
+
 ## [3.1.0] - 2023-11-20
 
 ### Snapshop v3.1.0 更新日志
