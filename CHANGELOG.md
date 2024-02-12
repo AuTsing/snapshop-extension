@@ -1,5 +1,12 @@
 # Snapshop for VSCode Change Log 更新日志
 
+## [3.1.3] - 2024-02-12
+
+### Snapshop v3.1.3 更新日志
+
+-   🐞 修复 Denort v0.17+ WS 截图功能无法使用的问题
+-   🐞 更新帮助页面
+
 ## [3.1.2] - 2023-11-23
 
 ### Snapshop v3.1.2 更新日志
