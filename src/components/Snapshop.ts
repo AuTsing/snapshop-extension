@@ -1,6 +1,6 @@
-import * as Vscode from 'vscode';
-import * as Path from 'path';
-import * as Fs from 'fs';
+import { ExtensionContext, WebviewPanel, Uri, window, ViewColumn } from 'vscode';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 
 export enum WebviewMessageCommand {
     getItem = 'getItem',
@@ -13,37 +13,39 @@ export interface IWebviewMessage {
 }
 
 export default class Snapshop {
-    private context: Vscode.ExtensionContext;
-    private panel?: Vscode.WebviewPanel;
+    private context: ExtensionContext;
+    private panel?: WebviewPanel;
 
-    constructor(context: Vscode.ExtensionContext) {
+    constructor(context: ExtensionContext) {
         this.context = context;
     }
 
-    private loadWebview(panel: Vscode.WebviewPanel): string {
+    private loadWebview(panel: WebviewPanel): string {
         const root = this.context.extensionPath;
-        const assets = Path.join(root, 'dist', 'snapshop', 'assets');
+        const assets = join(root, 'dist', 'snapshop', 'assets');
 
-        const html = Path.join(root, 'dist', 'snapshop', 'index.html');
-        const htmlContent = Fs.readFileSync(html, { encoding: 'utf8' });
+        const html = join(root, 'dist', 'snapshop', 'index.html');
+        const htmlContent = readFileSync(html, { encoding: 'utf8' });
         const replacer = (_: string, filename: string) => {
-            const path = Path.join(assets, filename);
-            const uri = Vscode.Uri.file(path);
+            const path = join(assets, filename);
+            const uri = Uri.file(path);
             const src = panel.webview.asWebviewUri(uri);
             return src.toString();
         };
-        const htmlContentReplaced = htmlContent.replace(/\/assets\/(index-\S*\.js)/, replacer).replace(/\/assets\/(style-\S*\.css)/, replacer);
+        const htmlContentReplaced = htmlContent
+            .replace(/\/assets\/(index-\S*\.js)/, replacer)
+            .replace(/\/assets\/(index-\S*\.css)/, replacer);
 
         return htmlContentReplaced;
     }
 
     public open(): void {
         if (this.panel) {
-            this.panel.reveal(Vscode.window.activeTextEditor?.viewColumn);
+            this.panel.reveal(window.activeTextEditor?.viewColumn);
             return;
         }
 
-        this.panel = Vscode.window.createWebviewPanel('snapshop', 'Snapshop', Vscode.ViewColumn.One, {
+        this.panel = window.createWebviewPanel('snapshop', 'Snapshop', ViewColumn.One, {
             enableScripts: true,
             retainContextWhenHidden: true,
         });
@@ -61,11 +63,11 @@ export default class Snapshop {
             }
         });
         this.panel.webview.html = this.loadWebview(this.panel);
-        this.panel.iconPath = Vscode.Uri.file(Path.join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
+        this.panel.iconPath = Uri.file(join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
         this.panel.onDidDispose(() => (this.panel = undefined), null, this.context.subscriptions);
     }
 
-    private handleGetItem(panel: Vscode.WebviewPanel, data: { key: string }) {
+    private handleGetItem(panel: WebviewPanel, data: { key: string }) {
         const state: any = this.context.globalState.get('snapshop') ?? {};
         const message: IWebviewMessage = {
             command: WebviewMessageCommand.getItem,

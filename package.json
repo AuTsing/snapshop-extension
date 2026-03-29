@@ -14,18 +14,17 @@
         "touchsprite",
         "触动精灵",
         "触动",
-        "denort"
+        "denort",
+        "autodn"
     ],
     "engines": {
-        "vscode": "^1.73.0"
+        "vscode": "^1.101.0"
     },
     "categories": [
         "Other"
     ],
-    "activationEvents": [
-        "onCommand:snapshop-extension.snapshop"
-    ],
-    "main": "./dist/extension.js",
+    "main": "./dist/extension.cjs",
+    "type": "module",
     "contributes": {
         "commands": [
             {
@@ -35,34 +34,20 @@
         ]
     },
     "scripts": {
-        "vscode:prepublish": "npm run package",
-        "compile": "webpack",
+        "vscode:prepublish": "npm run build:snapshop && npm run build:extension",
         "watch:extension": "webpack --watch",
         "watch:snapshop": "cd ./src/snapshop && npm run watch:vscode",
         "build:extension": "webpack --mode production --devtool hidden-source-map",
-        "build:snapshop": "cd ./src/snapshop && npm run build:vscode",
-        "package": "npm-run-all build:*",
-        "compile-tests": "tsc -p . --outDir out",
-        "watch-tests": "tsc -p . -w --outDir out",
-        "pretest": "npm run compile-tests && npm run compile && npm run lint",
-        "lint": "eslint src --ext ts",
-        "test": "node ./out/test/runTest.js"
+        "build:snapshop": "cd ./src/snapshop && npm run build:vscode"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.4",
-        "@types/mocha": "^9.0.0",
-        "@types/node": "16.x",
-        "@types/vscode": "^1.73.0",
-        "@typescript-eslint/eslint-plugin": "^5.1.0",
-        "@typescript-eslint/parser": "^5.1.0",
-        "@vscode/test-electron": "^1.6.2",
-        "eslint": "^8.1.0",
-        "glob": "^7.1.7",
-        "mocha": "^9.1.3",
-        "npm-run-all": "^4.1.5",
-        "ts-loader": "^9.4.2",
-        "typescript": "^4.9.5",
-        "webpack": "^5.52.1",
-        "webpack-cli": "^4.8.0"
+        "@types/node": "22.x",
+        "@types/vscode": "^1.101.0",
+        "typescript-eslint": "^8.0.0",
+        "eslint": "^9.0.0",
+        "ts-loader": "^9.0.0",
+        "typescript": "^5.0.0",
+        "webpack": "^5.0.0",
+        "webpack-cli": "^7.0.0"
     }
 }
