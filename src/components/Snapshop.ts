@@ -2,32 +2,33 @@ import { ExtensionContext, WebviewPanel, Uri, window, ViewColumn } from 'vscode'
 import { join } from 'path';
 import { readFileSync } from 'fs';
 
-export enum WebviewMessageCommand {
-    getItem = 'getItem',
-    setItem = 'setItem',
+enum WebviewMessageCommand {
+    GetItem = 'GetItem',
+    SetItem = 'SetItem',
 }
 
-export interface IWebviewMessage {
+interface WebviewMessage {
     command: WebviewMessageCommand;
-    data: any;
+    data: { key: string; value?: string };
 }
 
 export default class Snapshop {
-    private context: ExtensionContext;
-    private panel?: WebviewPanel;
+    private readonly context: ExtensionContext;
+    private panel: WebviewPanel | null;
 
     constructor(context: ExtensionContext) {
         this.context = context;
+        this.panel = null;
     }
 
     private loadWebview(panel: WebviewPanel): string {
-        const root = this.context.extensionPath;
-        const assets = join(root, 'dist', 'snapshop', 'assets');
+        const rootPath = this.context.extensionPath;
+        const assetsDir = join(rootPath, 'dist', 'snapshop', 'assets');
 
-        const html = join(root, 'dist', 'snapshop', 'index.html');
-        const htmlContent = readFileSync(html, { encoding: 'utf8' });
+        const htmlPath = join(rootPath, 'dist', 'snapshop', 'index.html');
+        const htmlContent = readFileSync(htmlPath, { encoding: 'utf8' });
         const replacer = (_: string, filename: string) => {
-            const path = join(assets, filename);
+            const path = join(assetsDir, filename);
             const uri = Uri.file(path);
             const src = panel.webview.asWebviewUri(uri);
             return src.toString();
@@ -39,8 +40,31 @@ export default class Snapshop {
         return htmlContentReplaced;
     }
 
-    public open(): void {
-        if (this.panel) {
+    private async handleGetItem(panel: WebviewPanel, message: WebviewMessage) {
+        try {
+            const state = this.context.globalState.get<{ [key: string]: any }>('snapshop') ?? {};
+            const newMessage: WebviewMessage = {
+                command: WebviewMessageCommand.GetItem,
+                data: { key: message.data.key, value: state[message.data.key] },
+            };
+            await panel.webview.postMessage(newMessage);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    private async handleSetItem(message: WebviewMessage) {
+        try {
+            const state = this.context.globalState.get<{ [key: string]: any }>('snapshop') ?? {};
+            state[message.data.key] = message.data.value;
+            await this.context.globalState.update('snapshop', state);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    open() {
+        if (this.panel !== null) {
             this.panel.reveal(window.activeTextEditor?.viewColumn);
             return;
         }
@@ -49,36 +73,21 @@ export default class Snapshop {
             enableScripts: true,
             retainContextWhenHidden: true,
         });
-        this.panel.webview.onDidReceiveMessage((message: IWebviewMessage) => {
-            if (!this.panel) {
+        this.panel.webview.onDidReceiveMessage((message: WebviewMessage) => {
+            if (this.panel === null) {
                 return;
             }
             switch (message.command) {
-                case WebviewMessageCommand.getItem:
-                    return this.handleGetItem(this.panel, message.data);
-                case WebviewMessageCommand.setItem:
-                    return this.handleSetItem(message.data);
-                default:
+                case WebviewMessageCommand.GetItem:
+                    this.handleGetItem(this.panel, message);
+                    break;
+                case WebviewMessageCommand.SetItem:
+                    this.handleSetItem(message);
                     break;
             }
         });
         this.panel.webview.html = this.loadWebview(this.panel);
         this.panel.iconPath = Uri.file(join(this.context.extensionPath, 'assets', 'logo_48_48.png'));
-        this.panel.onDidDispose(() => (this.panel = undefined), null, this.context.subscriptions);
-    }
-
-    private handleGetItem(panel: WebviewPanel, data: { key: string }) {
-        const state: any = this.context.globalState.get('snapshop') ?? {};
-        const message: IWebviewMessage = {
-            command: WebviewMessageCommand.getItem,
-            data: { key: data.key, value: state[data.key] },
-        };
-        panel.webview.postMessage(message);
-    }
-
-    private handleSetItem(data: { key: string; value: any }) {
-        const state: any = this.context.globalState.get('snapshop') ?? {};
-        state[data.key] = data.value;
-        this.context.globalState.update('snapshop', state);
+        this.panel.onDidDispose(() => (this.panel = null), null, this.context.subscriptions);
     }
 }
