@@ -1,5 +1,9 @@
 # Snapshop for VSCode Change Log 更新日志
 
+## [4.1.0] - 2026-05-11
+
+- 优化 API 查找器的流程
+
 ## [4.0.0] - 2026-03-30
 
 - WS协议更新，以适配 Auto.dn v3.4.0+
