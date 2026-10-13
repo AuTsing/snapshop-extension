@@ -1,6 +1,6 @@
 import { ExtensionContext, WebviewPanel, Uri, window, ViewColumn } from 'vscode';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 enum WebviewMessageCommand {
     GetItem = 'GetItem',

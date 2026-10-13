@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "types": ["node"],
         "module": "es2022",
         "moduleResolution": "bundler",
         "target": "ES2022",
